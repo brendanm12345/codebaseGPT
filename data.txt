@@ -1,0 +1,35 @@
+Spring Quarter Reflection
+
+Finals week
+
+Wow that was a massive amount of work that I completed. I wish I had started it all a little earlier. It’s tricky though because I was pretty booked all the way up until that week. I’m really impressed with my self for getting all that work done and learning so much in a single week. I feel so happy that I get to learn computer science at Stanford and really play in the big leagues here. These are all the smartest mother fuckers ever and I get to work with them and hang out with them and learn from them. I feel like I showed good character this week by doing my work honestly and trying my best and staying excited and movtiated through it all. Things I could have done better 
+1. Work smarter. Spend more time thinking carefully about why I’m doing what I’m doing. For example don’t spend 4 hour debugging something that your team will decide it not going to be used
+2. Initiate projects earlier. Open the assignment as early as possible. 
+
+It would’ve been nice to actually have fully finished each of my projects and I totally wish that I could’ve gotten like positive results for the machine learning project and made my Web app a little better and actually finish the Spotify betting app but of course it’s like three projects, and I kind of waited until the last week or two to start and finish those out a way that I could’ve got them all that but I don’t know I would’ve been cool to have started those earlier and like really finish those projects and imagine like if I could put those two on my portfolio and I really want to finish those with my extra time this week that site super solid software engineering portfolio just from 1/4 so that
+
+I did that hard thing that excited me, not the easy thing for the good grade
+
+Work smarter
+
+Finishing Projects
+
+Main reflections 
+- I would have been in my own in the world right now and I have almost nothing going on entrepreneurially 
+- I need to build my skills this summer and get in with the Actual builder community at Stanford. 
+    - How: Apply to YC winter and Summer. 
+    - Build projects with people for friends and family demos 
+    - Apply to google SWE 
+    - Meet with and get to know VCs
+    - Stay in touch with builders. Lyron, Longo, Ian Lim, etc
+    - Remember to think about important problems while making stupid hacks as well
+    - There should be a few clear bug problem (spaces) that I’m really passionate about where if I graduated I’d be like. Ok I’m gonna go do this
+    - Have a list of 10ish excellent Stanford people (engineers, etc) that I would pull in to co found with me
+    - Another route is join a fire GSB start up 
+    - Join all of the builder community groups, and have a portfolio to show for it. 
+- By this time next year I want to have either a start up or a job locked in or both 
+Obv these reflections so far are very career and action oriented. 
+- overall I have some anxieties about really launching my career that I’ve been preparing for in the real world. Like I can’t be working towards it anymore. I need to DO it and be fully equipped with the skills needed to get me into google etc for SWE / PM or start a start up (hard skills, network, ideas, communities)
+- This was a good school year. Quite intense I would say. Lots of new feelings. Missing some of the old ones. Time felt a bit distorted considering that so many of my friends graduated and I socially graduated. Learned a lot though. My technical skills have greatly advanced which feel great im excited to be building the skill set I need to really bring my ideas to life 
+
+

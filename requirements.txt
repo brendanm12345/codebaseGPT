@@ -1,0 +1,6 @@
+langchain
+openai
+chromadb
+deeplake
+flask
+gitpython
