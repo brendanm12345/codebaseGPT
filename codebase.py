@@ -4,15 +4,23 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import DeepLake
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import TextLoader
+from git import Repo
+from flask import Flask, request
 import constants
 import os
 import sys
 
+app = Flask(__name__)
 
 def set_environment_variables():
     os.environ["ACTIVELOOP_TOKEN"] = constants.ACTIVELOOP_APIKEY
     os.environ["OPENAI_API_KEY"] = constants.OPENAI_APIKEY
 
+
+def clone_repo(github_link):
+    dir = Repo.clone_from(github_link, "./")
+    print("CLONED: ", dir)
+    return dir
 
 def get_docs_from_directory(root_dir='./motion-canvas'):
     docs = []
@@ -55,12 +63,15 @@ def handle_questions(questions, qa):
         chat_history.append((question, result['answer']))
         print(f"-> **Question**: {question} \n")
         print(f"**Answer**: {result['answer']} \n")
+        return result['answer']
 
 
-def main():
+def main(github_link, question):
     set_environment_variables()
 
-    docs = get_docs_from_directory()
+    repo_dir = clone_repo(github_link)
+
+    docs = get_docs_from_directory(repo_dir)
     texts = chunk_files(docs)
 
     username = "brendanm12345"
@@ -70,11 +81,22 @@ def main():
     model = ChatOpenAI(model='gpt-3.5-turbo')
     qa = ConversationalRetrievalChain.from_llm(model, retriever=retriever)
 
-    query = sys.argv[1]
-    questions = [query]
+    # query = sys.argv[1]
+    questions = [question]
 
     handle_questions(questions, qa)
 
+# Flask server
+@app.route('/ask', methods=['POST'])
+def ask():
+    data = request.json
+    github_link = data['githubLink']
+    question = data['question']
+
+    answer = main(github_link, question)
+
+    return {'answer': answer}
 
 if __name__ == "__main__":
-    main()
+    # run the flask app.
+    app.run(port=5000)
