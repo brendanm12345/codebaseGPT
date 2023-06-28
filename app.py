@@ -5,12 +5,19 @@ from langchain.vectorstores import DeepLake
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import TextLoader
 from git import Repo
-from flask import Flask, request
+from urllib.parse import urlparse
+from flask import Flask, request, render_template
+from flask_cors import CORS
+import shutil
+
+
 import constants
 import os
 import sys
 
 app = Flask(__name__)
+CORS(app)
+
 
 def set_environment_variables():
     os.environ["ACTIVELOOP_TOKEN"] = constants.ACTIVELOOP_APIKEY
@@ -18,16 +25,36 @@ def set_environment_variables():
 
 
 def clone_repo(github_link):
-    dir = Repo.clone_from(github_link, "./")
-    print("CLONED: ", dir)
-    return dir
+    codebase_dir = "codebase"
+    
+    # Check if the directory exists, and if it does, remove it
+    if os.path.exists(codebase_dir):
+        print(f"'{codebase_dir}' exists. Attempting to remove...")
+        shutil.rmtree(codebase_dir)
+        if os.path.exists(codebase_dir):
+            print(f"Failed to remove '{codebase_dir}'")
+            return None
+        else:
+            print(f"Successfully removed '{codebase_dir}'")
+    
+    print(f"Cloning from '{github_link}' into '{codebase_dir}'...")
+    try:
+        Repo.clone_from(github_link, codebase_dir)
+    except Exception as e:
+        print(f"Failed to clone: {e}")
+        return None
+
+    print(f"Successfully cloned '{github_link}' into '{codebase_dir}'")
+    return codebase_dir
+
 
 def get_docs_from_directory(root_dir='./motion-canvas'):
     docs = []
     for dirpath, dirnames, filenames in os.walk(root_dir):
         for file in filenames:
             try:
-                loader = TextLoader(os.path.join(dirpath, file), encoding='utf-8')
+                loader = TextLoader(os.path.join(
+                    dirpath, file), encoding='utf-8')
                 docs.extend(loader.load_and_split())
             except Exception as e:
                 print(f"Error in file {file}:", e)
@@ -39,9 +66,9 @@ def chunk_files(docs):
     return text_splitter.split_documents(docs)
 
 
-def create_deep_lake(username, texts):
+def create_deep_lake(username, texts, repo):
     embeddings = OpenAIEmbeddings(disallowed_special=())
-    db = DeepLake(dataset_path=f"hub://{username}/motion-canvas",
+    db = DeepLake(dataset_path=f"hub://{username}/{repo}",
                   embedding_function=embeddings)
     db.add_documents(texts, embedding_data=texts)
     return db
@@ -63,7 +90,18 @@ def handle_questions(questions, qa):
         chat_history.append((question, result['answer']))
         print(f"-> **Question**: {question} \n")
         print(f"**Answer**: {result['answer']} \n")
-        return result['answer']
+    return chat_history
+
+
+
+def get_repo_name(github_link):
+    url = urlparse(github_link)
+    
+    # Ex: '/username/repo_name.git'
+    # Split the path into segments and get the last segment (removing '.git' from the end)
+    repo_name = url.path.split('/')[-1].replace('.git', '')
+    
+    return repo_name
 
 
 def main(github_link, question):
@@ -75,7 +113,7 @@ def main(github_link, question):
     texts = chunk_files(docs)
 
     username = "brendanm12345"
-    db = create_deep_lake(username, texts)
+    db = create_deep_lake(username, texts, get_repo_name(github_link))
     retriever = setup_retriever(db)
 
     model = ChatOpenAI(model='gpt-3.5-turbo')
@@ -84,19 +122,25 @@ def main(github_link, question):
     # query = sys.argv[1]
     questions = [question]
 
-    handle_questions(questions, qa)
+    chat_history =  handle_questions(questions, qa)
+    return chat_history[-1][1], chat_history # Returns the last answer and the whole chat history.
 
 # Flask server
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
 @app.route('/ask', methods=['POST'])
 def ask():
     data = request.json
     github_link = data['githubLink']
     question = data['question']
 
-    answer = main(github_link, question)
+    answer, chat_history = main(github_link, question)
+    return {'answer': answer, 'chat_history': chat_history}
 
-    return {'answer': answer}
 
 if __name__ == "__main__":
     # run the flask app.
-    app.run(port=5000)
+    app.run(port=5002)

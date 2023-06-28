@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Codebase QA Tool</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        width: 500px;
+      }
+      input[type="text"],
+      textarea {
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 16px;
+      }
+      #answer {
+        margin-top: 20px;
+      }
+    
+    </style>
+  </head>
+  <body>
+    <form id="queryForm">
+      <label for="githubLink">GitHub Link:</label><br />
+      <input type="text" id="githubLink" name="githubLink" /><br />
+      <label for="question">Your Question:</label><br />
+      <textarea id="question" name="question"></textarea><br />
+      <input type="submit" value="Submit" />
+    </form>
+    <br />
+    <div style="background-color: rgb(243, 243, 240); border-radius: 6px; padding: 16px; width: 468px" id="chat-history">
+      <!-- Answer will be populated here -->
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
+<!-- later: show chat history and append new questions and answers, useEffect to rerender on change -->

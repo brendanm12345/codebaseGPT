@@ -4,3 +4,4 @@ chromadb
 deeplake
 flask
 gitpython
+flask-cors
