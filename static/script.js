@@ -4,6 +4,10 @@ document.getElementById('queryForm').addEventListener('submit', function (event)
   const githubLink = document.getElementById('githubLink').value;
   const question = document.getElementById('question').value;
 
+  const submitButton = document.getElementById('submit-button');
+  submitButton.setAttribute('disabled', 'disabled');
+
+
   fetch('http://localhost:5002/ask', {
     method: 'POST',
     headers: {
@@ -18,7 +22,6 @@ document.getElementById('queryForm').addEventListener('submit', function (event)
     .then(data => {
       console.log("Answer: ", data.answer);
       console.log("Chat history: ", data.chat_history);
-      document.getElementById('answer').innerHTML = data.answer.replace(/\n/g, '<br/>');
       let chatHistoryElement = document.getElementById('chat-history');
       data.chat_history.forEach(([question, answer]) => {
         let questionElement = document.createElement('div');
@@ -27,12 +30,15 @@ document.getElementById('queryForm').addEventListener('submit', function (event)
         chatHistoryElement.appendChild(questionElement);
 
         let answerElement = document.createElement('div');
-        answerElement.textContent = `A: ${answer}`;
+        answerElement.innerHTML = `A: ${answer.replace(/\n/g, '<br/>')}`;
         answerElement.className = 'answer';
         chatHistoryElement.appendChild(answerElement);
       });
+
+      submitButton.removeAttribute('disabled');
     })
     .catch(error => {
       console.error('Error:', error);
+      submitButton.removeAttribute('disabled');
     });
 });
